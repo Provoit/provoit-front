@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Deps
+        run: sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev
+
       - name: Format
         run: cargo fmt --verbose --check
 
@@ -35,7 +38,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Deps
-        run: cargo install dioxus-cli
+        run: |
+          rustup target add wasm32-unknown-unknown
+          cargo install dioxus-cli
 
       - name: Build
         run: dioxus build --platform web
@@ -50,7 +55,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Deps
-        run: cargo install dioxus-cli
+        run: |
+          cargo install dioxus-cli
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev
 
       - name: Build
         run: dioxus build --platform desktop
