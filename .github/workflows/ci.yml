@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: Code lint, format & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Format
+        run: cargo fmt --verbose --check
+
+      - name: Lint
+        run: cargo clippy --verbose
+
+      - name: Test
+        run: cargo test --verbose
+
+      - name: Docs
+        run: cargo doc --verbose
+
+  build:
+    name: Wasm build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deps
+        run: cargo install dioxus-cli
+
+      - name: Build
+        run: dioxus build --platform web
+
+  build-desktop:
+    name: Build for ${{ matrix.os }} desktop
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deps
+        run: cargo install dioxus-cli
+
+      - name: Build
+        run: dioxus build --platform desktop
