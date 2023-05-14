@@ -25,13 +25,13 @@ jobs:
         run: cargo fmt --verbose --check
 
       - name: Lint
-        run: cargo clippy --verbose
+        run: cargo clippy --verbose --no-deps
 
       - name: Test
-        run: cargo test --verbose
+        run: cargo test --verbose --locked
 
       - name: Docs
-        run: cargo doc --verbose
+        run: cargo doc --verbose --no-deps --locked
 
   build:
     name: Wasm build
@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deps
+      - name: Rustup wasm target
         run: rustup target add wasm32-unknown-unknown
 
       # Cache .cargo to avoid installing dioxus-cli
@@ -69,7 +69,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deps
+      # Cache .cargo to avoid installing dioxus-cli
+      - name: Dioxus cli cache
+        id: cache-dioxus-cli
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-dioxus-cli
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo
+
+      # Install dioxus cli if cache misses
+      - name: Dioxus cli install
+        if: ${{ steps.cache-dioxus-cli.outputs.cache-hit != 'true' }}
         run: cargo install dioxus-cli
 
       - name: Apt Deps
