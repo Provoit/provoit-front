@@ -21,3 +21,4 @@ dioxus-desktop = "0.3.0"
 [profile.release]
 strip = true
 lto = true
+opt-level = "s"
