@@ -38,23 +38,25 @@ jobs:
       - name: Rustup wasm target
         run: rustup target add wasm32-unknown-unknown
 
-      # Cache .cargo to avoid installing dioxus-cli
-      - name: Dioxus cli cache
-        id: cache-dioxus-cli
+      # Cache .cargo to avoid installing trunk
+      - name: Trunk cache
+        id: cache-trunk-cli
         uses: actions/cache@v3
         env:
-          cache-name: cache-dioxus-cli
+          cache-name: cache-trunk-cli
         with:
           path: ~/.cargo
-          key: ${{ runner.os }}-cargo
+          key: ${{ runner.os }}-cargo-trunk
 
       # Install dioxus cli if cache misses
-      - name: Dioxus cli install
-        if: ${{ steps.cache-dioxus-cli.outputs.cache-hit != 'true' }}
-        run: cargo install dioxus-cli
+      - name: Trunk install
+        if: ${{ steps.cache-trunk-cli.outputs.cache-hit != 'true' }}
+        run: cargo install trunk
 
       - name: Build
-        run: dioxus build --release --platform web
+        run: |
+          trunk build --release --public-url provoit-front index.prod.html
+          cp public/* dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
