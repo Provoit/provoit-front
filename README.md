@@ -44,3 +44,12 @@ cargo run
 
 To format the code, you can use `cargo fmt` to format rust code and `dioxus fmt` to format rsx code.
 They might sometimes be in conflict, in that case `rustfmt` is right.
+
+## Vim config
+
+`rustfmt` should run automatically if rust-analyzer is setup correctly.
+In addition, you can enter this command to format rsx on save :
+
+```vim
+autocmd BufWritePost *.rs silent !dioxus fmt
+```
