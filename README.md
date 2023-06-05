@@ -39,3 +39,8 @@ or
 ```sh
 cargo run
 ```
+
+## Formatting
+
+To format the code, you can use `cargo fmt` to format rust code and `dioxus fmt` to format rsx code.
+They might sometimes be in conflict, in that case `rustfmt` is right.
