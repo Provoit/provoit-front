@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 dioxus = "0.3"
+dioxus-router = "0.3.0"
 provoit-types = { git = "https://github.com/Provoit/provoit-types.git", version = "0.1.0" }
 
 
