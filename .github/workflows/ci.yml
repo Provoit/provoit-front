@@ -21,8 +21,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev
 
+      # Cache .cargo to avoid installing dioxus-cli
+      - name: Dioxus cli cache
+        id: cache-dioxus-cli
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-dioxus-cli
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo
+
+      # Install dioxus cli if cache misses
+      - name: Dioxus cli install
+        if: ${{ steps.cache-dioxus-cli.outputs.cache-hit != 'true' }}
+        run: cargo install dioxus-cli
+
       - name: Format
-        run: cargo fmt --verbose --check
+        run: |
+          cargo fmt --verbose --check
+          dioxus fmt --check
 
       - name: Lint
         run: cargo clippy --verbose --no-deps
