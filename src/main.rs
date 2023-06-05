@@ -1,11 +1,17 @@
 #![allow(non_snake_case)]
-use dioxus::prelude::*;
+use crate::app::App;
 
+mod app;
+mod components;
+mod pages;
+
+/// Run the app for desktop
 #[cfg(target_family = "wasm")]
 fn run() {
     dioxus_web::launch(App);
 }
 
+/// Run the app for the web
 #[cfg(not(target_family = "wasm"))]
 fn run() {
     use dioxus_desktop::Config;
@@ -19,16 +25,4 @@ fn run() {
 
 fn main() {
     run();
-}
-
-fn App(cx: Scope) -> Element {
-    cx.render(rsx! (
-        div {
-            style: "text-align: center;",
-            h1 { "🌗 Dioxus 🚀" }
-            h3 { "Frontend that scales." }
-            p { "Dioxus is a portable, performant, and ergonomic framework for building cross-platform user interfaces in Rust." }
-            button { "C'est un bouton" }
-        }
-    ))
 }
