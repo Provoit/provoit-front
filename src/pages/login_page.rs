@@ -20,7 +20,7 @@ pub fn LoginPage(cx: Scope) -> Element {
                 }
                 button { r#type: "submit", "Continuer" }
             }
-            span { class: "secondary", "Pas de compte ? " }
+            "Pas de compte ? "
             Link { to: "/user/create", "Créer un compte" }
         }
     ))
