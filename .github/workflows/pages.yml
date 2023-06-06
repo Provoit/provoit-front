@@ -55,7 +55,7 @@ jobs:
 
       - name: Build
         run: |
-          trunk build --release --public-url provoit-front index.prod.html
+          trunk build --release --no-default-features --public-url provoit-front index.prod.html
           cp public/* dist
 
       - name: Upload artifact
