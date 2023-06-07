@@ -1,7 +1,8 @@
-use dioxus::{prelude::*, core::AttributeValue};
+use dioxus::{core::AttributeValue, prelude::*};
 
 /// Alert severity
 #[derive(PartialEq, Clone, Copy)]
+#[allow(dead_code)]
 pub enum Severity {
     Error,
     Warning,
@@ -10,12 +11,15 @@ pub enum Severity {
 }
 
 impl<'a> IntoAttributeValue<'a> for Severity {
-    fn into_value(self, _bump: &'a dioxus::core::exports::bumpalo::Bump) -> dioxus::core::AttributeValue<'a> {
+    fn into_value(
+        self,
+        _bump: &'a dioxus::core::exports::bumpalo::Bump,
+    ) -> dioxus::core::AttributeValue<'a> {
         AttributeValue::Text(match self {
             Self::Error => "alert-error",
             Self::Warning => "alert-warning",
             Self::Info => "alert-info",
-            Self::Success => "alert-success"
+            Self::Success => "alert-success",
         })
     }
 }
