@@ -2,7 +2,10 @@ use dioxus::prelude::*;
 use dioxus_router::Link;
 use reqwest::StatusCode;
 
-use crate::{components::{alert, Alert}, utils::request::post};
+use crate::{
+    components::{alert, Alert},
+    utils::request::post,
+};
 
 pub fn LoginPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
