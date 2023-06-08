@@ -29,6 +29,7 @@ pub fn LoginPage(cx: Scope) -> Element {
 
     cx.render(rsx! {
         main { class: "container",
+            img { src: "logo.svg" }
             h5 { "Connectez vous pour continuer" }
             form { prevent_default: "onsubmit", onsubmit: on_submit,
                 label {
