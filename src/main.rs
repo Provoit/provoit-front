@@ -4,6 +4,7 @@ use crate::app::App;
 mod app;
 mod components;
 mod pages;
+mod utils;
 
 /// Run the app for desktop
 #[cfg(target_family = "wasm")]
