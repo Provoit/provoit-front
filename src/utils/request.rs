@@ -4,7 +4,7 @@ use serde::Serialize;
 const BASE: &str = "http://localhost:8000";
 
 /// Convenience method to send a get request
-pub async fn get<T>(url: &str) -> Result<Response, reqwest::Error> {
+pub async fn get(url: &str) -> Result<Response, reqwest::Error> {
     Client::new().get(format!("{BASE}{url}")).send().await
 }
 
@@ -33,6 +33,6 @@ where
 }
 
 /// Convenience method to send a delete request
-pub async fn delete<T>(url: &str) -> Result<Response, reqwest::Error> {
+pub async fn delete(url: &str) -> Result<Response, reqwest::Error> {
     Client::new().delete(format!("{BASE}{url}")).send().await
 }
