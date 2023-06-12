@@ -4,6 +4,7 @@ use crate::app::App;
 mod app;
 mod components;
 mod pages;
+mod utils;
 
 /// Run the app for desktop
 #[cfg(target_family = "wasm")]
@@ -24,5 +25,7 @@ fn run() {
 }
 
 fn main() {
+    #[cfg(feature = "logging")]
+    console_log::init_with_level(log::Level::Debug).expect("Failed to init logger");
     run();
 }

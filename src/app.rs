@@ -1,9 +1,9 @@
 use dioxus::prelude::*;
-use dioxus_router::{Route, Router};
+use dioxus_router::{Redirect, Route, Router};
 
 use crate::{
     components::Menu,
-    pages::{LoginPage, PageNotFound, ProfilePage},
+    pages::{CreateUserPage, LoginPage, PageNotFound, ProfilePage},
 };
 
 /// Application entrypoint.
@@ -13,8 +13,10 @@ pub fn App(cx: Scope) -> Element {
         Router {
             Menu {}
             Route { to: "/login", LoginPage {} }
+            Route { to: "/user/create", CreateUserPage {} }
             Route { to: "/profile", ProfilePage {} }
             Route { to: "", PageNotFound {} }
+            Redirect { to: "/login" }
         }
     ))
 }
