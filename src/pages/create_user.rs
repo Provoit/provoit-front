@@ -3,9 +3,10 @@ use dioxus::prelude::*;
 use dioxus_free_icons::icons::fa_solid_icons::FaSquarePlus;
 use dioxus_free_icons::Icon;
 use log::debug;
+use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
 
-use crate::{utils::request::post, components::alert};
+use crate::{components::alert, utils::request::post};
 
 pub fn CreateUserPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
@@ -16,13 +17,40 @@ pub fn CreateUserPage(cx: Scope) -> Element {
         let error = error.clone();
         loading.set(true);
 
+        let user = NewUser {
+            lastname: event
+                .values
+                .get("lastname")
+                .unwrap_or(&String::default())
+                .to_owned(),
+            firstname: event
+                .values
+                .get("firstname")
+                .unwrap_or(&String::default())
+                .to_owned(),
+            mail: event
+                .values
+                .get("mail")
+                .unwrap_or(&String::default())
+                .to_owned(),
+            smoker: event.values.get("smoker").eq(&Some(&String::from("on"))),
+            passwd: event
+                .values
+                .get("passwd")
+                .unwrap_or(&String::default())
+                .to_owned(),
+            profile_pic: None,
+            id_favorite_vehicle: None,
+        };
+
         cx.spawn(async move {
-            let res = post("/users", &event.values).await;
+            let res = post("/users", &user).await;
 
             match res {
                 Ok(r) if r.status() == StatusCode::CREATED => error.set(None),
                 _ => error.set(Some("Erreur lors de la connexion, veuillez réessayer.")),
             }
+            loading.set(false)
         })
     };
 
@@ -42,8 +70,13 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                 }
                 label {
                     "Email"
-                    input { name: "mail", placeholder: "Email", required: true }
+                    input { r#type: "email", name: "mail", placeholder: "Email", required: true }
                 }
+                label {
+                    input { r#type: "checkbox", name: "smoker" }
+                    "Fumeur"
+                }
+                hr {}
                 label {
                     "Mot de passe"
                     input { r#type: "password", name: "passwd", placeholder: "Mot de passe", required: true }
@@ -57,9 +90,11 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                         required: true
                     }
                 }
-                h2 { "Ajouter un véhicule" }
-                span { onclick: |event| { debug!("{:?}", event) },
-                    Icon { width: 32, height: 32, icon: FaSquarePlus }
+                div { text_align: "center",
+                    p { strong { "Ajouter un véhicule" } }
+                    span { onclick: |event| { debug!("{:?}", event) },
+                        Icon { width: 48, height: 48, icon: FaSquarePlus }
+                    }
                 }
                 button { r#type: "submit", "aria-busy": *loading.current(), "Créer un compte" }
             }
