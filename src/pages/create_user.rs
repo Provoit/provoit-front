@@ -1,5 +1,8 @@
 use alert::Alert;
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaSquarePlus;
+use dioxus_free_icons::Icon;
+use log::debug;
 use reqwest::StatusCode;
 
 use crate::{utils::request::post, components::alert};
@@ -54,8 +57,11 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                         required: true
                     }
                 }
-                p { "Plus" }
-                button { r#type: "submit", "aria-busy": *loading.current(), "Continuer" }
+                h2 { "Ajouter un véhicule" }
+                span { onclick: |event| { debug!("{:?}", event) },
+                    Icon { width: 32, height: 32, icon: FaSquarePlus }
+                }
+                button { r#type: "submit", "aria-busy": *loading.current(), "Créer un compte" }
             }
             (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
         }
