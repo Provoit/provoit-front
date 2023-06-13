@@ -34,11 +34,11 @@ pub fn LoginPage(cx: Scope) -> Element {
             form { prevent_default: "onsubmit", onsubmit: on_submit,
                 label {
                     "Mail"
-                    input { name: "mail", placeholder: "Email" }
+                    input { name: "mail", placeholder: "Email", required: true }
                 }
                 label {
                     "Mot de passe"
-                    input { r#type: "password", name: "passwd", placeholder: "Mot de passe" }
+                    input { r#type: "password", name: "passwd", placeholder: "Mot de passe", required: true }
                 }
                 button { r#type: "submit", "aria-busy": *loading.current(), "Continuer" }
             }
