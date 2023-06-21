@@ -2,15 +2,20 @@ use alert::Alert;
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::fa_solid_icons::FaSquarePlus;
 use dioxus_free_icons::Icon;
-use log::debug;
-use provoit_types::models::users::NewUser;
+use provoit_types::models::{users::NewUser, vehicles::NewVehicle};
 use reqwest::StatusCode;
 
-use crate::{components::alert, utils::request::post};
+use crate::{
+    components::{alert, AddVehicle},
+    utils::request::post,
+};
 
 pub fn CreateUserPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
+
+    let editing_vehicle = use_state(cx, || false);
+    let vehicles = use_ref(cx, Vec::<NewVehicle>::new);
 
     let on_submit = |event: FormEvent| {
         let loading = loading.clone();
@@ -54,6 +59,11 @@ pub fn CreateUserPage(cx: Scope) -> Element {
         })
     };
 
+    let on_submit_vehicle = |v: NewVehicle| {
+        vehicles.with_mut(|list| list.push(v));
+        editing_vehicle.set(false);
+    };
+
     cx.render(rsx!(
         main { class: "container",
             header { h1 { "Créer un compte" } }
@@ -90,10 +100,16 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                         required: true
                     }
                 }
-                div { text_align: "center",
-                    p { strong { "Ajouter un véhicule" } }
-                    span { onclick: |event| { debug!("{:?}", event) },
-                        Icon { width: 48, height: 48, icon: FaSquarePlus }
+                if *editing_vehicle.current() {
+                    rsx! {
+                        AddVehicle { onsubmit: on_submit_vehicle, oncancel: |_| editing_vehicle.set(false) }
+                    }
+                } else {
+                    rsx! {
+                        div { text_align: "center",
+                            p { strong { "Ajouter un véhicule" } }
+                            span { onclick: |_| editing_vehicle.set(true), Icon { width: 48, height: 48, icon: FaSquarePlus } }
+                        }
                     }
                 }
                 button { r#type: "submit", "aria-busy": *loading.current(), "Créer un compte" }

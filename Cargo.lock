@@ -291,9 +291,9 @@ dependencies = [
 
 [[package]]
 name = "cfg-expr"
-version = "0.15.2"
+version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e70d3ad08698a0568b0562f22710fe6bfc1f4a61a367c77d0398c562eadd453a"
+checksum = "215c0072ecc28f92eeb0eea38ba63ddfcb65c2828c46311d646f1a3ff5f9841c"
 dependencies = [
  "smallvec",
  "target-lexicon",
@@ -446,13 +446,12 @@ dependencies = [
 
 [[package]]
 name = "core-graphics-types"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a68b68b3446082644c91ac778bf50cd4104bfb002b5a6a7c44cca5a2c70788b"
+checksum = "2bb142d41022986c1d8ff29103a1411c8a3dfad3552f87a4f8dc50d61d4f4e33"
 dependencies = [
  "bitflags",
  "core-foundation",
- "foreign-types",
  "libc",
 ]
 
@@ -718,9 +717,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-interpreter-js"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12333b583cbfbf6e5842b15b2b9b82eb83ff7b13ce4a4261d9d6fc1c138b9273"
+checksum = "1d6a3e878e9623d948ebe14cec62e98af4e5c897f65ae2d27663b209f4d382e2"
 dependencies = [
  "js-sys",
  "sledgehammer_bindgen",
@@ -1675,9 +1674,9 @@ dependencies = [
 
 [[package]]
 name = "internment"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a798d7677f07d6f1e77be484ea8626ddb1566194de399f1206306820c406371"
+checksum = "161079c3ad892faa215fcfcf3fd7a6a3c9288df2b06a2c2bad7fbfad4f01d69d"
 dependencies = [
  "hashbrown",
  "parking_lot",
@@ -2158,9 +2157,9 @@ checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
 name = "openssl"
-version = "0.10.54"
+version = "0.10.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "69b3f656a17a6cbc115b5c7a40c616947d213ba182135b014d6051b73ab6f019"
+checksum = "345df152bc43501c5eb9e4654ff05f794effb78d4efe3d53abc158baddc0703d"
 dependencies = [
  "bitflags",
  "cfg-if",
@@ -2190,9 +2189,9 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.88"
+version = "0.9.90"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2ce0f250f34a308dcfdbb351f511359857d4ed2134ba715a4eadd46e1ffd617"
+checksum = "374533b0e45f3a7ced10fcaeccca020e66656bc03dac384f852e4e5a7a8104a6"
 dependencies = [
  "cc",
  "libc",
@@ -2459,7 +2458,7 @@ dependencies = [
 [[package]]
 name = "provoit-types"
 version = "0.1.0"
-source = "git+https://github.com/Provoit/provoit-types.git#c08ad9aa6587d1b86604b02d7bf6161dbc2959ee"
+source = "git+https://github.com/Provoit/provoit-types.git#d7ac4f60950ccc38512fde5259a254b4c1dcbabf"
 dependencies = [
  "chrono",
  "serde",
@@ -3042,7 +3041,7 @@ version = "6.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5fa6fb9ee296c0dc2df41a656ca7948546d061958115ddb0bcaae43ad0d17d2"
 dependencies = [
- "cfg-expr 0.15.2",
+ "cfg-expr 0.15.3",
  "heck 0.4.1",
  "pkg-config",
  "toml 0.7.4",
@@ -3097,9 +3096,9 @@ dependencies = [
 
 [[package]]
 name = "target-lexicon"
-version = "0.12.7"
+version = "0.12.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd1ba337640d60c3e96bc6f0638a939b9c9a7f2c316a1598c279828b3d1dc8c5"
+checksum = "1b1c7f239eb94671427157bd93b3694320f3668d4e1eff08c7285366fd777fac"
 
 [[package]]
 name = "tempfile"
