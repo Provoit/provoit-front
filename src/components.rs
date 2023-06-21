@@ -1,7 +1,7 @@
+pub mod add_vehicle;
 pub mod alert;
 pub mod menu;
-pub mod add_vehicle;
 
+pub use add_vehicle::AddVehicle;
 pub use alert::Alert;
 pub use menu::Menu;
-pub use add_vehicle::AddVehicle;

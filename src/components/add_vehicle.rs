@@ -3,19 +3,18 @@ use dioxus_free_icons::icons::fa_solid_icons::FaCarSide;
 use dioxus_free_icons::Icon;
 use dioxus_router::use_router;
 
-use log::debug;
 use provoit_types::models::vehicles::NewVehicle;
 
 #[derive(Props)]
 pub struct AddVehicleProps<'a> {
     onsubmit: EventHandler<'a, NewVehicle>,
+    oncancel: EventHandler<'a>,
 }
 
 pub fn AddVehicle<'a>(cx: Scope<'a, AddVehicleProps<'a>>) -> Element<'a> {
     let router = use_router(cx);
 
     let on_submit = |e: FormEvent| {
-        debug!("{:?}", e.values);
         let vehicle: NewVehicle = e.values.clone().into();
         cx.props.onsubmit.call(vehicle);
     };
@@ -66,7 +65,12 @@ pub fn AddVehicle<'a>(cx: Scope<'a, AddVehicleProps<'a>>) -> Element<'a> {
                 }
             }
             div { class: "grid",
-                button { r#type: "button", class: "secondary", onclick: |_| { router.pop_route() }, "Annuler" }
+                button {
+                    r#type: "button",
+                    class: "secondary",
+                    onclick: |_| { cx.props.oncancel.call(()) },
+                    "Annuler"
+                }
                 button { r#type: "submit", "Valider" }
             }
         }
