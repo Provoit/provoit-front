@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::fa_solid_icons::FaCarSide;
 use dioxus_free_icons::Icon;
-use dioxus_router::use_router;
 
 use provoit_types::models::vehicles::NewVehicle;
 
@@ -12,8 +11,6 @@ pub struct AddVehicleProps<'a> {
 }
 
 pub fn AddVehicle<'a>(cx: Scope<'a, AddVehicleProps<'a>>) -> Element<'a> {
-    let router = use_router(cx);
-
     let on_submit = |e: FormEvent| {
         let vehicle: NewVehicle = e.values.clone().into();
         cx.props.onsubmit.call(vehicle);
