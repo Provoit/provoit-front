@@ -7,6 +7,8 @@ use provoit_types::models::vehicles::Vehicle;
 pub struct VehicleCardProps<'a> {
     vehicle: Vehicle,
     ondelete: EventHandler<'a, &'a Vehicle>,
+    onfavorite: EventHandler<'a, &'a Vehicle>,
+    favorite: bool,
 }
 
 pub fn VehicleCard<'a>(cx: Scope<'a, VehicleCardProps<'a>>) -> Element<'a> {
@@ -18,7 +20,14 @@ pub fn VehicleCard<'a>(cx: Scope<'a, VehicleCardProps<'a>>) -> Element<'a> {
                 cx.props.vehicle.name.clone()
             }
             span {
-                Icon { width: 32, height: 32, icon: FaStar }
+                span { onclick: |_| cx.props.onfavorite.call(&cx.props.vehicle),
+                    Icon {
+                        width: 32,
+                        height: 32,
+                        icon: FaStar,
+                        fill: if cx.props.favorite { "yellow" } else { "currentColor" }
+                    }
+                }
                 " "
                 span { onclick: |_| cx.props.ondelete.call(&cx.props.vehicle),
                     Icon { width: 32, height: 32, icon: FaTrashCan }
