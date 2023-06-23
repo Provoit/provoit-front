@@ -1,6 +1,6 @@
+use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
-use log::debug;
-use provoit_types::models::vehicles::Vehicle;
+use provoit_types::models::{timings::NewTiming, trips::NewTrip, vehicles::Vehicle};
 
 use crate::utils::request;
 
@@ -20,8 +20,38 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
             .await
     });
 
-    let on_submit = |event: FormEvent| {
-        debug!("{:?}", event.values);
+    let on_submit = |e: FormEvent| {
+        let trip: NewTrip = e.values.clone().into();
+        let start_timing: NewTiming = NewTiming {
+            date: e
+                .values
+                .get("start_date")
+                .map(|d| NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date de début invalide")),
+            time: NaiveTime::parse_from_str(
+                e.values
+                    .get("start_time")
+                    .expect("L'heure de départ est requise"),
+                "%H:%M",
+            )
+            .expect("Heure de départ invalide"),
+            id_day: e
+                .values
+                .get("id_day")
+                .map(|v| v.parse().expect("Jour incorrecte")),
+        };
+        let end_timing: NewTiming = NewTiming {
+            date: e.values.get("end_date").map(|d| {
+                NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date d'arriver invalide")
+            }),
+            time: NaiveTime::parse_from_str(
+                e.values
+                    .get("end_time")
+                    .expect("L'heure d'arriver est requise"),
+                "%H:%M",
+            )
+            .expect("Heure d'arriver invalide"),
+            id_day: None,
+        };
     };
 
     cx.render(rsx! {
@@ -42,6 +72,7 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                     input {
                         r#type: "checkbox",
                         value: "{recurring_traject}",
+                        name: "recurring",
                         oninput: |e| recurring_traject.set(e.value.eq("true"))
                     }
                     "Trajet régulier"
@@ -51,7 +82,7 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                         div { class: "grid",
                             label {
                                 "Jour"
-                                select { required: true,
+                                select { required: true, name: "id_day",
                                     option { value: "1", "Lundi" }
                                     option { value: "2", "Mardi" }
                                     option { value: "3", "Mercredi" }
@@ -64,9 +95,9 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                             label {
                                 "Fréquence"
                                 select { required: true, name: "id_frequency",
-                                    option { value: "1", "Journalier" }
-                                    option { value: "2", "Hebdomadaire" }
-                                    option { value: "3", "Mensuel" }
+                                    option { value: "2", "Journalier" }
+                                    option { value: "3", "Hebdomadaire" }
+                                    option { value: "4", "Mensuel" }
                                 }
                             }
                         }
@@ -76,11 +107,11 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                         div { class: "grid",
                             label {
                                 "Date de départ"
-                                input { r#type: "date", required: true }
+                                input { r#type: "date", name: "start_date", required: true }
                             }
                             label {
                                 "Date d'arriver"
-                                input { r#type: "date", required: true }
+                                input { r#type: "date", name: "end_date", required: true }
                             }
                         }
                     )
@@ -88,11 +119,11 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                 div { class: "grid",
                     label {
                         "Heure de départ"
-                        input { r#type: "time", required: true }
+                        input { r#type: "time", name: "start_time", required: true }
                     }
                     label {
                         "Heure d'arriver"
-                        input { r#type: "time", required: true }
+                        input { r#type: "time", name: "end_time", required: true }
                     }
                 }
                 hr {}
