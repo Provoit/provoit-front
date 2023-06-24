@@ -1,6 +1,6 @@
 use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
-use provoit_types::models::{timings::NewTiming, trips::NewTrip, vehicles::Vehicle};
+use provoit_types::models::{timings::NewTiming, creation::CreateTrip, vehicles::Vehicle};
 
 use crate::utils::request;
 
@@ -21,36 +21,37 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
     });
 
     let on_submit = |e: FormEvent| {
-        let trip: NewTrip = e.values.clone().into();
-        let start_timing: NewTiming = NewTiming {
-            date: e
-                .values
-                .get("start_date")
-                .map(|d| NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date de début invalide")),
-            time: NaiveTime::parse_from_str(
-                e.values
-                    .get("start_time")
-                    .expect("L'heure de départ est requise"),
-                "%H:%M",
-            )
-            .expect("Heure de départ invalide"),
-            id_day: e
-                .values
-                .get("id_day")
-                .map(|v| v.parse().expect("Jour incorrecte")),
-        };
-        let end_timing: NewTiming = NewTiming {
-            date: e.values.get("end_date").map(|d| {
-                NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date d'arriver invalide")
-            }),
-            time: NaiveTime::parse_from_str(
-                e.values
-                    .get("end_time")
-                    .expect("L'heure d'arriver est requise"),
-                "%H:%M",
-            )
-            .expect("Heure d'arriver invalide"),
-            id_day: None,
+        let data = CreateTrip {
+            trip: e.values.clone().into(),
+            start_timing: NewTiming {
+                date: e.values.get("start_date").map(|d| {
+                    NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date de début invalide")
+                }),
+                time: NaiveTime::parse_from_str(
+                    e.values
+                        .get("start_time")
+                        .expect("L'heure de départ est requise"),
+                    "%H:%M",
+                )
+                .expect("Heure de départ invalide"),
+                id_day: e
+                    .values
+                    .get("id_day")
+                    .map(|v| v.parse().expect("Jour incorrecte")),
+            },
+            end_timing: NewTiming {
+                date: e.values.get("end_date").map(|d| {
+                    NaiveDate::parse_from_str(d, "%Y-%m-%d").expect("Date d'arriver invalide")
+                }),
+                time: NaiveTime::parse_from_str(
+                    e.values
+                        .get("end_time")
+                        .expect("L'heure d'arriver est requise"),
+                    "%H:%M",
+                )
+                .expect("Heure d'arriver invalide"),
+                id_day: None,
+            },
         };
     };
 
