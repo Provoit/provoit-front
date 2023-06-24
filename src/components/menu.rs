@@ -1,7 +1,15 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
 
+use crate::utils::request;
+
 pub fn Menu(cx: Scope) -> Element {
+    let disconnect = |_: MouseEvent| {
+        cx.spawn(async move {
+            let _ = request::post("/logout", "").await;
+        });
+    };
+
     cx.render(rsx!(
         ul {
             li {
@@ -13,9 +21,7 @@ pub fn Menu(cx: Scope) -> Element {
             li {
                 Link { to: "/traject/search", "Rechercher un trajet" }
             }
-            li {
-                Link { to: "/profile", "Déconnexion" }
-            }
+            li { a { onclick: disconnect, href: "#", "Déconnexion" } }
         }
     ))
 }
