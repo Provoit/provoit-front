@@ -25,7 +25,7 @@ pub fn Navbar(cx: Scope) -> Element {
         dialog { id: "menu-dialog", open: *open.current(),
             article { text_align: "center",
                 a { href: "#", class: "close", onclick: |_| open.set(false) }
-                Menu {}
+                Menu { onnavigate: |_| open.set(false) }
             }
         }
     })
