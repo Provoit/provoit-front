@@ -5,21 +5,26 @@ use dioxus_free_icons::{
 };
 use dioxus_router::Link;
 
-use crate::components::Menu;
+use crate::{components::Menu, auth::Auth};
 
 pub fn Navbar(cx: Scope) -> Element {
     let open = use_state(cx, || false);
+    let auth = use_shared_state::<Auth>(cx).unwrap();
 
     cx.render(rsx! {
         nav { class: "container-fluid",
             ul {
-                li { onclick: |_| open.set(!*open.current()), Icon { icon: FaBars } }
+                auth.read().user.is_some().then(|| rsx!(
+                    li { onclick: |_| open.set(!*open.current()), Icon { icon: FaBars } }
+                ))
             }
             ul { li { "Provoit" } }
             ul {
-                li {
-                    Link { to: "/profile", Icon { icon: FaUser } }
-                }
+                auth.read().user.is_some().then(|| rsx!(
+                    li {
+                        Link { to: "/profile", Icon { icon: FaUser } }
+                    }
+                ))
             }
         }
         dialog { id: "menu-dialog", open: *open.current(),
