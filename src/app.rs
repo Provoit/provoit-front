@@ -10,7 +10,7 @@ use crate::{
 /// Contains all the routes.
 pub fn App(cx: Scope) -> Element {
     cx.render(rsx!(
-        Router { 
+        Router {
             Navbar {}
             Route { to: "/login", LoginPage {} }
             Route { to: "/user/create", CreateUserPage {} }
