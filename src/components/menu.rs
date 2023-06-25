@@ -8,10 +8,10 @@ pub fn Menu(cx: Scope) -> Element {
                 Link { to: "/profile", "Profile" }
             }
             li {
-                Link { to: "/traject/create", "Créer un trajet" }
+                Link { to: "/trip/create", "Créer un trajet" }
             }
             li {
-                Link { to: "/traject/search", "Rechercher un trajet" }
+                Link { to: "/trip/search", "Rechercher un trajet" }
             }
             li {
                 Link { to: "/profile", "Déconnexion" }
