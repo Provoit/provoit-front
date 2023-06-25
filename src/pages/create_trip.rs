@@ -1,6 +1,6 @@
 use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
-use provoit_types::models::{timings::NewTiming, creation::CreateTrip, vehicles::Vehicle};
+use provoit_types::models::{creation::CreateTrip, timings::NewTiming, vehicles::Vehicle};
 
 use crate::utils::request;
 
@@ -52,7 +52,12 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
                 .expect("Heure d'arriver invalide"),
                 id_day: None,
             },
+            road_types: Vec::new(),
         };
+
+        cx.spawn(async move {
+            let _ = request::post("/trips", &data).await;
+        })
     };
 
     cx.render(rsx! {
