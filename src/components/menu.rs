@@ -1,20 +1,36 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
 
-pub fn Menu(cx: Scope) -> Element {
+use crate::utils::request;
+
+#[derive(Props)]
+pub struct MenuProps<'a> {
+    onnavigate: EventHandler<'a>,
+}
+
+pub fn Menu<'a>(cx: Scope<'a, MenuProps<'a>>) -> Element<'a> {
+    let disconnect = |_: MouseEvent| {
+        cx.spawn(async move {
+            let _ = request::post("/logout", "").await;
+        });
+    };
+
     cx.render(rsx!(
-        ul {
-            li {
-                Link { to: "/profile", "Profile" }
-            }
-            li {
-                Link { to: "/trip/create", "Créer un trajet" }
-            }
-            li {
-                Link { to: "/trip/search", "Rechercher un trajet" }
-            }
-            li {
-                Link { to: "/profile", "Déconnexion" }
+
+        aside {
+            nav {
+                ul {
+                    li {
+                        Link { to: "/profile", onclick: |_| cx.props.onnavigate.call(()), "Profile" }
+                    }
+                    li {
+                        Link { to: "/trip/create", onclick: |_| cx.props.onnavigate.call(()), "Créer un trajet" }
+                    }
+                    li {
+                        Link { to: "/trip/search", onclick: |_| cx.props.onnavigate.call(()), "Rechercher un trajet" }
+                    }
+                    li { a { onclick: disconnect, href: "#", "Déconnexion" } }
+                }
             }
         }
     ))
