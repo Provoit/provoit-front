@@ -2,8 +2,10 @@
 use crate::app::App;
 
 mod app;
+mod auth;
 mod components;
 mod pages;
+mod router;
 mod utils;
 
 /// Run the app for desktop
