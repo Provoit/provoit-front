@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 use provoit_types::models::users::User;
 use serde::Deserialize;
 
-#[derive(Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Auth {
     pub user: Option<User>,
     pub token: String,
