@@ -3,7 +3,7 @@ use dioxus_router::{Redirect, Route, Router};
 
 use crate::{
     components::Navbar,
-    pages::{CreateUserPage, LoginPage, PageNotFound, ProfilePage},
+    pages::{CreateTripPage, CreateUserPage, LoginPage, PageNotFound, ProfilePage},
 };
 
 /// Application entrypoint.
@@ -14,6 +14,8 @@ pub fn App(cx: Scope) -> Element {
             Navbar {}
             Route { to: "/login", LoginPage {} }
             Route { to: "/user/create", CreateUserPage {} }
+            Route { to: "/trip/create", CreateTripPage { id_user: 1 } }
+            Route { to: "/trip/search", CreateTripPage { id_user: 1 } }
             Route { to: "/profile", ProfilePage {} }
             Route { to: "", PageNotFound {} }
             Redirect { to: "/login" }
