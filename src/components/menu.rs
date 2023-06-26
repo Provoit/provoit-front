@@ -25,6 +25,7 @@ pub fn Menu<'a>(cx: Scope<'a, MenuProps<'a>>) -> Element<'a> {
     };
 
     cx.render(rsx!(
+
         aside {
             nav {
                 ul {
@@ -32,10 +33,10 @@ pub fn Menu<'a>(cx: Scope<'a, MenuProps<'a>>) -> Element<'a> {
                         Link { to: "/profile", onclick: |_| cx.props.onnavigate.call(()), "Profile" }
                     }
                     li {
-                        Link { to: "/traject/create", onclick: |_| cx.props.onnavigate.call(()), "Créer un trajet" }
+                        Link { to: "/trip/create", onclick: |_| cx.props.onnavigate.call(()), "Créer un trajet" }
                     }
                     li {
-                        Link { to: "/traject/search", onclick: |_| cx.props.onnavigate.call(()), "Rechercher un trajet" }
+                        Link { to: "/trip/search", onclick: |_| cx.props.onnavigate.call(()), "Rechercher un trajet" }
                     }
                     li { a { onclick: disconnect, href: "#", "Déconnexion" } }
                 }
