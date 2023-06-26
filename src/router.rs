@@ -14,19 +14,19 @@ pub fn Router(cx: Scope) -> Element {
         dioxus_router::Router {
             Navbar {}
             Route { to: "/login", LoginPage {} }
+            Route { to: "/user/create", CreateUserPage {} }
+            Route { to: "/trip/search", SearchTripPage {} }
+            Route { to: "/trip/create", CreateTripPage {} }
+            Route { to: "/profile", ProfilePage {} }
+            Route { to: "", PageNotFound {} }
 
-            if let Some(user) = &auth.read().user {
+            if auth.read().user.is_some() {
                 rsx!(
-                    Route { to: "/user/create", CreateUserPage {} }
-                    Route { to: "/trip/search", SearchTripPage {} }
-                    Route { to: "/trip/create", CreateTripPage { id_user: user.id } }
-                    Route { to: "/profile", ProfilePage {} }
                     Redirect { to: "/trip/search" }
                 )
             } else {
                 rsx!(Redirect { to: "/login" })
             }
-            Route { to: "", PageNotFound {} }
         }
     })
 }

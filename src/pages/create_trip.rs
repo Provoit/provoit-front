@@ -2,21 +2,18 @@ use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
 use provoit_types::models::{creation::CreateTrip, timings::NewTiming, vehicles::Vehicle};
 
-use crate::{hooks::use_token, utils::request};
+use crate::{auth::Auth, hooks::use_token, utils::request};
 
-#[derive(Props, PartialEq)]
-pub struct CreateTripPageProps {
-    id_user: u64,
-}
-
-pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
+pub fn CreateTripPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
     let recurring_traject = use_state(cx, || false);
+
+    let auth = use_shared_state::<Auth>(cx).unwrap();
     let token = use_token(cx);
 
     let vehicles = use_future(
         cx,
-        &(cx.props.id_user, token.clone()),
+        &(auth.read().user.clone().unwrap().id, token.clone()),
         |(id_user, token)| async move {
             request::get(format!("/users/{id_user}/vehicles").as_str(), token)
                 .await?
