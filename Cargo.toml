@@ -15,6 +15,8 @@ reqwest = { version = "0.11.18", features = ["json"] }
 serde = "1.0.164"
 dioxus-free-icons = { version = "0.6.0", features = ["font-awesome-solid"] }
 chrono = { version = "0.4.26", features = ["serde"] }
+base16ct = { version = "0.2.0", features = ["alloc"] }
+sha2 = "0.10.7"
 
 
 [features]

@@ -3,6 +3,7 @@ use dioxus::prelude::*;
 use dioxus_router::{use_router, Link};
 use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
+use sha2::{Digest, Sha512};
 
 use crate::components::alert;
 
@@ -35,18 +36,16 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                 .unwrap_or(&String::default())
                 .to_owned(),
             smoker: event.values.get("smoker").eq(&Some(&String::from("on"))),
-            passwd: event
-                .values
-                .get("passwd")
-                .unwrap_or(&String::default())
-                .to_owned(),
+            passwd: base16ct::lower::encode_string(&Sha512::digest(
+                event.values.get("passwd").unwrap_or(&String::default()),
+            )),
             profile_pic: None,
             id_favorite_vehicle: None,
         };
 
         cx.spawn(async move {
             let res = reqwest::Client::new()
-                .post("/users")
+                .post("http://localhost:8000/users")
                 .json(&user)
                 .send()
                 .await;
@@ -99,7 +98,7 @@ pub fn CreateUserPage(cx: Scope) -> Element {
             }
             "Déjà un compte ? "
             Link { to: "/login", "Se connecter" }
-            (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
+            (*error.current()).clone().map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
         }
     ))
 }

@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
+use provoit_types::models::users::LoginUser;
 use reqwest::StatusCode;
+use sha2::{Digest, Sha512};
 
 use crate::{
     auth::Auth,
@@ -19,10 +21,21 @@ pub fn LoginPage(cx: Scope) -> Element {
         let auth = auth.clone();
         loading.set(true);
 
+        let user: LoginUser = LoginUser {
+            mail: event
+                .values
+                .get("mail")
+                .unwrap_or(&String::default())
+                .to_owned(),
+            passwd: base16ct::lower::encode_string(&Sha512::digest(
+                event.values.get("passwd").unwrap_or(&String::default()),
+            )),
+        };
+
         cx.spawn(async move {
             let res = reqwest::Client::new()
                 .post("http://localhost:8000/login")
-                .json(&event.values)
+                .json(&user)
                 .send()
                 .await;
 
