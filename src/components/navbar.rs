@@ -5,7 +5,7 @@ use dioxus_free_icons::{
 };
 use dioxus_router::Link;
 
-use crate::{components::Menu, auth::Auth};
+use crate::{auth::Auth, components::Menu};
 
 pub fn Navbar(cx: Scope) -> Element {
     let open = use_state(cx, || false);

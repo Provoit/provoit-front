@@ -2,15 +2,16 @@ use dioxus::prelude::*;
 use dioxus_router::{Redirect, Route};
 
 use crate::{
+    auth::Auth,
     components::Navbar,
-    pages::{CreateUserPage, LoginPage, PageNotFound, ProfilePage}, auth::Auth,
+    pages::{CreateUserPage, LoginPage, PageNotFound, ProfilePage},
 };
 
 pub fn Router(cx: Scope) -> Element {
     let auth = use_shared_state::<Auth>(cx).unwrap();
 
     cx.render(rsx! {
-        dioxus_router::Router { 
+        dioxus_router::Router {
             Navbar {}
             Route { to: "/login", LoginPage {} }
             Route { to: "/user/create", CreateUserPage {} }

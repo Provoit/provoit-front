@@ -3,8 +3,8 @@ use crate::app::App;
 
 mod app;
 mod auth;
-mod hooks;
 mod components;
+mod hooks;
 mod pages;
 mod router;
 mod utils;
