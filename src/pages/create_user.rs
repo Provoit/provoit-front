@@ -1,5 +1,6 @@
 use alert::Alert;
 use dioxus::prelude::*;
+use dioxus_router::use_router;
 use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
 
@@ -9,9 +10,12 @@ pub fn CreateUserPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
 
+    let router = use_router(cx);
+
     let on_submit = |event: FormEvent| {
         let loading = loading.clone();
         let error = error.clone();
+        let router = router.clone();
         loading.set(true);
 
         let user = NewUser {
@@ -44,10 +48,10 @@ pub fn CreateUserPage(cx: Scope) -> Element {
             let res = post("/users", &user).await;
 
             match res {
-                Ok(r) if r.status() == StatusCode::CREATED => error.set(None),
+                Ok(r) if r.status() == StatusCode::CREATED => router.navigate_to("/login"),
                 _ => error.set(Some("Erreur lors de la connexion, veuillez réessayer.")),
             }
-            loading.set(false)
+            loading.set(false);
         })
     };
 
