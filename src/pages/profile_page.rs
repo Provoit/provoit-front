@@ -1,12 +1,16 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::fa_solid_icons::FaUser, Icon};
+use dioxus_router::use_router;
 use log::debug;
-use provoit_types::models::users::User;
+use provoit_types::models::{
+    users::User,
+    vehicles::{NewVehicle, Vehicle},
+};
 use reqwest::StatusCode;
 
 use crate::{
     auth::Auth,
-    components::{alert, Alert},
+    components::{alert, AddVehicle, Alert, VehicleCard},
     hooks::use_token,
     utils::request,
 };
@@ -19,13 +23,24 @@ pub fn ProfilePage(cx: Scope) -> Element {
     let error = use_state(cx, || None);
 
     let user = auth.read().user.clone().unwrap();
+    let vehicles = use_future(
+        cx,
+        &(user.id, token.clone()),
+        |(id_user, token)| async move {
+            request::get(format!("/users/{id_user}/vehicles").as_str(), token)
+                .await?
+                .json::<Vec<Vehicle>>()
+                .await
+        },
+    );
 
+    let token1 = token.clone();
     let on_submit = move |e: FormEvent| {
         let user_id = user.id;
-        let token = token.clone();
         let loading = loading.clone();
         let error = error.clone();
         let auth = auth.clone();
+        let token1 = token1.clone();
 
         loading.set(true);
 
@@ -33,14 +48,14 @@ pub fn ProfilePage(cx: Scope) -> Element {
             let res = request::put(
                 format!("/users/{}", user_id).as_str(),
                 &e.values,
-                token.clone(),
+                token1.clone(),
             )
             .await;
 
             match res {
                 Ok(r) if r.status() == StatusCode::OK => {
                     error.set(None);
-                    let res = request::get("/users/me", token).await;
+                    let res = request::get("/users/me", token1).await;
 
                     if let Ok(r) = res {
                         error.set(None);
@@ -55,6 +70,26 @@ pub fn ProfilePage(cx: Scope) -> Element {
             loading.set(false);
         });
     };
+
+    let token1 = token.clone();
+    let on_submit_vehicle = move |vec: NewVehicle| {
+        let token1 = token1.clone();
+        cx.spawn(async move {
+            let _ = request::post("/vehicles", &vec, token1).await;
+        });
+    };
+
+    let token1 = token.clone();
+    let on_delete_vehicle = move |vec: &Vehicle| {
+        let token1 = token1.clone();
+        let vec = vec.clone();
+
+        cx.spawn(async move {
+            let _ = request::delete(format!("/vehicles/{}", vec.id).as_str(), token1).await;
+        });
+    };
+
+    let on_favorite_vehicle = |v: &Vehicle| {};
 
     cx.render(rsx!(
         main { class: "container",
@@ -77,7 +112,26 @@ pub fn ProfilePage(cx: Scope) -> Element {
                 }
                 button { r#type: "submit", "aria-busy": *loading.current(), "Valider les changements" }
             }
-            (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
+            (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err })),
+
+            match vehicles.value() {
+                Some(Ok(vehicles)) => {
+                    rsx!(
+                        vehicles.iter().map(|v| {
+                            let on_delete_vehicle = on_delete_vehicle.clone();
+                            rsx!(VehicleCard {
+                                vehicle: v.clone(),
+                                ondelete: on_delete_vehicle,
+                                onfavorite: on_favorite_vehicle,
+                                favorite: user.id_favorite_vehicle.unwrap_or(0) == v.id
+                            })
+                        })
+                    )
+                },
+                _ => rsx!("")
+            },
+
+            AddVehicle { onsubmit: on_submit_vehicle, oncancel: |_| {} }
         }
     ))
 }
