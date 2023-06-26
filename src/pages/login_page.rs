@@ -1,6 +1,5 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
-use log::warn;
 use reqwest::StatusCode;
 
 use crate::{

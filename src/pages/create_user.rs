@@ -4,7 +4,7 @@ use dioxus_router::{use_router, Link};
 use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
 
-use crate::{components::alert, hooks::use_token, utils::request::post};
+use crate::components::alert;
 
 pub fn CreateUserPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);

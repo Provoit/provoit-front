@@ -1,7 +1,5 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::fa_solid_icons::FaUser, Icon};
-use dioxus_router::use_router;
-use log::debug;
 use provoit_types::models::{
     users::User,
     vehicles::{NewVehicle, Vehicle},
@@ -79,17 +77,16 @@ pub fn ProfilePage(cx: Scope) -> Element {
         });
     };
 
-    let token1 = token.clone();
     let on_delete_vehicle = move |vec: &Vehicle| {
-        let token1 = token1.clone();
+        let token = token.clone();
         let vec = vec.clone();
 
         cx.spawn(async move {
-            let _ = request::delete(format!("/vehicles/{}", vec.id).as_str(), token1).await;
+            let _ = request::delete(format!("/vehicles/{}", vec.id).as_str(), token).await;
         });
     };
 
-    let on_favorite_vehicle = |v: &Vehicle| {};
+    let on_favorite_vehicle = |_v: &Vehicle| {};
 
     cx.render(rsx!(
         main { class: "container",
