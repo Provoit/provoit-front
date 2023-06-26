@@ -1,6 +1,6 @@
 use alert::Alert;
 use dioxus::prelude::*;
-use dioxus_router::use_router;
+use dioxus_router::{use_router, Link};
 use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
 
@@ -97,6 +97,8 @@ pub fn CreateUserPage(cx: Scope) -> Element {
                 }
                 button { r#type: "submit", "aria-busy": *loading.current(), "Créer un compte" }
             }
+            "Déjà un compte ? "
+            Link { to: "/login", "Se connecter" }
             (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
         }
     ))
