@@ -98,7 +98,7 @@ pub fn CreateUserPage(cx: Scope) -> Element {
             }
             "Déjà un compte ? "
             Link { to: "/login", "Se connecter" }
-            (*error.current()).clone().map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
+            (*error.current()).map(|err| rsx!(Alert { severity: alert::Severity::Error, err }))
         }
     ))
 }
