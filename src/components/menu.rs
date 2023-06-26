@@ -16,6 +16,7 @@ pub fn Menu<'a>(cx: Scope<'a, MenuProps<'a>>) -> Element<'a> {
     };
 
     cx.render(rsx!(
+
         aside {
             nav {
                 ul {

@@ -6,13 +6,13 @@ mod components;
 mod pages;
 mod utils;
 
-/// Run the app for desktop
+/// Run the app for the web
 #[cfg(target_family = "wasm")]
 fn run() {
     dioxus_web::launch(App);
 }
 
-/// Run the app for the web
+/// Run the app for desktop
 #[cfg(not(target_family = "wasm"))]
 fn run() {
     use dioxus_desktop::Config;
