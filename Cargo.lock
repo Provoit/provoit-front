@@ -2443,6 +2443,7 @@ dependencies = [
 name = "provoit-front"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "console_log",
  "dioxus",
  "dioxus-desktop",
