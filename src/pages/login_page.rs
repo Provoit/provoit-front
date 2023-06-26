@@ -1,11 +1,11 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
+use log::warn;
 use reqwest::StatusCode;
 
 use crate::{
     auth::Auth,
     components::{alert, Alert},
-    utils::request,
 };
 
 pub fn LoginPage(cx: Scope) -> Element {
@@ -21,7 +21,11 @@ pub fn LoginPage(cx: Scope) -> Element {
         loading.set(true);
 
         cx.spawn(async move {
-            let res = request::post("/login", &event.values).await;
+            let res = reqwest::Client::new()
+                .post("http://localhost:8000/login")
+                .json(&event.values)
+                .send()
+                .await;
 
             match res {
                 Ok(r) if r.status() == StatusCode::OK => {
@@ -30,7 +34,9 @@ pub fn LoginPage(cx: Scope) -> Element {
                     auth.write().user = data.user;
                     auth.write().token = data.token;
                 }
-                _ => error.set(Some("Erreur lors de la connexion, veuillez réessayer.")),
+                _ => {
+                    error.set(Some("Erreur lors de la connexion, veuillez réessayer."));
+                }
             }
             loading.set(false);
         });

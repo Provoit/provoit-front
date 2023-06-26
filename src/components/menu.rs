@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
 
-use crate::utils::request;
+use crate::{auth::Auth, utils::request};
 
 #[derive(Props)]
 pub struct MenuProps<'a> {
@@ -9,10 +9,19 @@ pub struct MenuProps<'a> {
 }
 
 pub fn Menu<'a>(cx: Scope<'a, MenuProps<'a>>) -> Element<'a> {
-    let disconnect = |_: MouseEvent| {
+    let auth = use_shared_state::<Auth>(cx).unwrap();
+
+    let disconnect = move |_: MouseEvent| {
+        let token = auth.read().token.clone();
+        let auth = auth.clone();
+
         cx.spawn(async move {
-            let _ = request::post("/logout", "").await;
+            let _ = request::post("/logout", "", token).await;
+            auth.write().user = None;
+            auth.write().token = "".to_owned();
         });
+
+        cx.props.onnavigate.call(());
     };
 
     cx.render(rsx!(
