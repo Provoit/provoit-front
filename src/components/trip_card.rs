@@ -52,6 +52,20 @@ pub fn TripCard(cx: Scope<TripCardProps>) -> Element {
         },
     );
 
+    let on_join = move |_| {
+        let trip_id = cx.props.trip.id;
+        let token = token.clone();
+
+        cx.spawn(async move {
+            let _ = request::post(
+                format!("/trips/join/{}", trip_id).as_str(),
+                "",
+                token.clone(),
+            )
+            .await;
+        })
+    };
+
     cx.render(rsx! {
         article {
             header {
@@ -64,7 +78,7 @@ pub fn TripCard(cx: Scope<TripCardProps>) -> Element {
                         "{cx.props.trip.end}"
                     }
                     // span to avoid full size button
-                    span { button { role: "button", class: "outline", "Rejoindre" } }
+                    span { button { onclick: on_join, role: "button", class: "outline", "Rejoindre" } }
                 }
                 match (start_timing.value(), end_timing.value()) {
                     (Some(Ok(st)), Some(Ok(et))) => rsx!(
