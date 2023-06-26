@@ -2,7 +2,7 @@ use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
 use provoit_types::models::{creation::CreateTrip, timings::NewTiming, vehicles::Vehicle};
 
-use crate::utils::request;
+use crate::{hooks::use_token, utils::request};
 
 #[derive(Props, PartialEq)]
 pub struct CreateTripPageProps {
@@ -12,15 +12,22 @@ pub struct CreateTripPageProps {
 pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
     let loading = use_state(cx, || false);
     let recurring_traject = use_state(cx, || false);
+    let token = use_token(cx);
 
-    let vehicles = use_future(cx, &(cx.props.id_user,), |(id_user,)| async move {
-        request::get(format!("/users/{id_user}/vehicles").as_str())
-            .await?
-            .json::<Vec<Vehicle>>()
-            .await
-    });
+    let vehicles = use_future(
+        cx,
+        &(cx.props.id_user, token.clone()),
+        |(id_user, token)| async move {
+            request::get(format!("/users/{id_user}/vehicles").as_str(), token)
+                .await?
+                .json::<Vec<Vehicle>>()
+                .await
+        },
+    );
 
-    let on_submit = |e: FormEvent| {
+    let on_submit = move |e: FormEvent| {
+        let token = token.clone();
+
         let data = CreateTrip {
             trip: e.values.clone().into(),
             start_timing: NewTiming {
@@ -56,7 +63,7 @@ pub fn CreateTripPage(cx: Scope<CreateTripPageProps>) -> Element {
         };
 
         cx.spawn(async move {
-            let _ = request::post("/trips", &data).await;
+            let _ = request::post("/trips", &data, token).await;
         })
     };
 

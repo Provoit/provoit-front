@@ -4,7 +4,7 @@ use dioxus_router::{Redirect, Route};
 use crate::{
     auth::Auth,
     components::Navbar,
-    pages::{CreateUserPage, LoginPage, PageNotFound, ProfilePage},
+    pages::{CreateTripPage, CreateUserPage, LoginPage, PageNotFound, ProfilePage, SearchTripPage},
 };
 
 pub fn Router(cx: Scope) -> Element {
@@ -14,14 +14,19 @@ pub fn Router(cx: Scope) -> Element {
         dioxus_router::Router {
             Navbar {}
             Route { to: "/login", LoginPage {} }
-            Route { to: "/user/create", CreateUserPage {} }
-            Route { to: "/profile", ProfilePage {} }
-            Route { to: "", PageNotFound {} }
-            if auth.read().user.is_none() {
-                rsx!(Redirect { to: "/login" })
+
+            if let Some(user) = &auth.read().user {
+                rsx!(
+                    Route { to: "/user/create", CreateUserPage {} }
+                    Route { to: "/trip/search", SearchTripPage {} }
+                    Route { to: "/trip/create", CreateTripPage { id_user: user.id } }
+                    Route { to: "/profile", ProfilePage {} }
+                    Redirect { to: "/trip/search" }
+                )
             } else {
-                rsx!(Redirect { to: "/trip/search" })
+                rsx!(Redirect { to: "/login" })
             }
+            Route { to: "", PageNotFound {} }
         }
     })
 }

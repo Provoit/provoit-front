@@ -1,11 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{
-    auth::AuthProvider,
-    router::Router
-    components::Navbar,
-    pages::{CreateTripPage, CreateUserPage, LoginPage, PageNotFound, ProfilePage, SearchTripPage},
-};
+use crate::{auth::AuthProvider, router::Router};
 
 /// Application entrypoint.
 /// Contains all the routes.

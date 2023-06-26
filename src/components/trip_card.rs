@@ -9,6 +9,7 @@ use provoit_types::models::{timings::Timing, trips::Trip, vehicles::Vehicle};
 
 use crate::{
     components::alert::{Alert, Severity},
+    hooks::use_token,
     utils::request,
 };
 
@@ -18,18 +19,23 @@ pub struct TripCardProps {
 }
 
 pub fn TripCard(cx: Scope<TripCardProps>) -> Element {
-    let vehicle = use_future(cx, &(cx.props.trip.id_vehicle,), |(id_vec,)| async move {
-        request::get(format!("/vehicles/{id_vec}").as_str())
-            .await?
-            .json::<Vehicle>()
-            .await
-    });
+    let token = use_token(cx);
+    let vehicle = use_future(
+        cx,
+        &(cx.props.trip.id_vehicle, token.clone()),
+        |(id_vec, token)| async move {
+            request::get(format!("/vehicles/{id_vec}").as_str(), token)
+                .await?
+                .json::<Vehicle>()
+                .await
+        },
+    );
 
     let start_timing = use_future(
         cx,
-        &(cx.props.trip.id_start_timing,),
-        |(id_start_timing,)| async move {
-            request::get(format!("/timings/{id_start_timing}").as_str())
+        &(cx.props.trip.id_start_timing, token.clone()),
+        |(id_start_timing, token)| async move {
+            request::get(format!("/timings/{id_start_timing}").as_str(), token)
                 .await?
                 .json::<Timing>()
                 .await
@@ -37,9 +43,9 @@ pub fn TripCard(cx: Scope<TripCardProps>) -> Element {
     );
     let end_timing = use_future(
         cx,
-        &(cx.props.trip.id_end_timing,),
-        |(id_end_timing,)| async move {
-            request::get(format!("/timings/{id_end_timing}").as_str())
+        &(cx.props.trip.id_end_timing, token.clone()),
+        |(id_end_timing, token)| async move {
+            request::get(format!("/timings/{id_end_timing}").as_str(), token)
                 .await?
                 .json::<Timing>()
                 .await
