@@ -20,6 +20,10 @@ pub fn ProfilePage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
 
+    if auth.read().user.clone().is_none() {
+        return None;
+    }
+
     let user = auth.read().user.clone().unwrap();
     let vehicles = use_future(
         cx,
