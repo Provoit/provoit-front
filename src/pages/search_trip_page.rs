@@ -1,11 +1,13 @@
 use dioxus::prelude::*;
 use provoit_types::models::trips::Trip;
 
-use crate::{components::TripCard, utils::request};
+use crate::{components::TripCard, hooks::use_token, utils::request};
 
 pub fn SearchTripPage(cx: Scope) -> Element {
-    let trips = use_future(cx, (), |_| async move {
-        request::get("/trips/search")
+    let token = use_token(cx);
+
+    let trips = use_future(cx, &(token,), |(token,)| async move {
+        request::get("/trips/search", token)
             .await?
             .json::<Vec<Trip>>()
             .await

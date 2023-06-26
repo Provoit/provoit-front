@@ -1,27 +1,42 @@
 use dioxus::prelude::*;
 use dioxus_router::Link;
+use log::warn;
 use reqwest::StatusCode;
 
 use crate::{
+    auth::Auth,
     components::{alert, Alert},
-    utils::request::post,
 };
 
 pub fn LoginPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
 
+    let auth = use_shared_state::<Auth>(cx).unwrap();
+
     let on_submit = |event: FormEvent| {
         let loading = loading.clone();
         let error = error.clone();
+        let auth = auth.clone();
         loading.set(true);
 
         cx.spawn(async move {
-            let res = post("/login", &event.values).await;
+            let res = reqwest::Client::new()
+                .post("http://localhost:8000/login")
+                .json(&event.values)
+                .send()
+                .await;
 
             match res {
-                Ok(r) if r.status() == StatusCode::OK => error.set(None),
-                _ => error.set(Some("Erreur lors de la connexion, veuillez réessayer.")),
+                Ok(r) if r.status() == StatusCode::OK => {
+                    error.set(None);
+                    let data = r.json::<Auth>().await.expect("Invalid json");
+                    auth.write().user = data.user;
+                    auth.write().token = data.token;
+                }
+                _ => {
+                    error.set(Some("Erreur lors de la connexion, veuillez réessayer."));
+                }
             }
             loading.set(false);
         });

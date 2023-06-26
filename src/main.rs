@@ -2,8 +2,11 @@
 use crate::app::App;
 
 mod app;
+mod auth;
 mod components;
+mod hooks;
 mod pages;
+mod router;
 mod utils;
 
 /// Run the app for the web

@@ -4,7 +4,7 @@ use dioxus_router::use_router;
 use provoit_types::models::users::NewUser;
 use reqwest::StatusCode;
 
-use crate::{components::alert, utils::request::post};
+use crate::{components::alert, hooks::use_token, utils::request::post};
 
 pub fn CreateUserPage(cx: Scope) -> Element {
     let loading = use_state(cx, || false);
@@ -45,7 +45,11 @@ pub fn CreateUserPage(cx: Scope) -> Element {
         };
 
         cx.spawn(async move {
-            let res = post("/users", &user).await;
+            let res = reqwest::Client::new()
+                .post("/users")
+                .json(&user)
+                .send()
+                .await;
 
             match res {
                 Ok(r) if r.status() == StatusCode::CREATED => router.navigate_to("/login"),
