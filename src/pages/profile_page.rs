@@ -19,6 +19,7 @@ pub fn ProfilePage(cx: Scope) -> Element {
 
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
+    let reload = use_state(cx, || false);
 
     if auth.read().user.clone().is_none() {
         return None;
@@ -35,6 +36,11 @@ pub fn ProfilePage(cx: Scope) -> Element {
                 .await
         },
     );
+
+    if *reload.current() {
+        vehicles.restart();
+        reload.set(false);
+    }
 
     let token1 = token.clone();
     let on_submit = move |e: FormEvent| {
@@ -76,17 +82,22 @@ pub fn ProfilePage(cx: Scope) -> Element {
     let token1 = token.clone();
     let on_submit_vehicle = move |vec: NewVehicle| {
         let token1 = token1.clone();
+        let reload = reload.clone();
+
         cx.spawn(async move {
             let _ = request::post("/vehicles", &vec, token1).await;
+            reload.set(true)
         });
     };
 
     let on_delete_vehicle = move |vec: &Vehicle| {
         let token = token.clone();
         let vec = vec.clone();
+        let reload = reload.clone();
 
         cx.spawn(async move {
             let _ = request::delete(format!("/vehicles/{}", vec.id).as_str(), token).await;
+            reload.set(true)
         });
     };
 
