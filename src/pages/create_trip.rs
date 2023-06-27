@@ -1,5 +1,6 @@
 use chrono::{NaiveDate, NaiveTime};
 use dioxus::prelude::*;
+use dioxus_router::use_router;
 use provoit_types::models::{creation::CreateTrip, timings::NewTiming, vehicles::Vehicle};
 
 use crate::{auth::Auth, hooks::use_token, utils::request};
@@ -10,6 +11,8 @@ pub fn CreateTripPage(cx: Scope) -> Element {
 
     let auth = use_shared_state::<Auth>(cx).unwrap();
     let token = use_token(cx);
+
+    let router = use_router(cx);
 
     let vehicles = use_future(
         cx,
@@ -24,6 +27,7 @@ pub fn CreateTripPage(cx: Scope) -> Element {
 
     let on_submit = move |e: FormEvent| {
         let token = token.clone();
+        let router = router.clone();
 
         let data = CreateTrip {
             trip: e.values.clone().into(),
@@ -60,7 +64,11 @@ pub fn CreateTripPage(cx: Scope) -> Element {
         };
 
         cx.spawn(async move {
-            let _ = request::post("/trips", &data, token).await;
+            let res = request::post("/trips", &data, token).await;
+
+            if res.is_ok() {
+                router.navigate_to("/trip/search");
+            }
         })
     };
 
