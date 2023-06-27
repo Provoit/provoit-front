@@ -17,6 +17,7 @@ pub fn ProfilePage(cx: Scope) -> Element {
     let auth = use_shared_state::<Auth>(cx).unwrap();
     let token = use_token(cx);
 
+    let open = use_state(cx, || false);
     let loading = use_state(cx, || false);
     let error = use_state(cx, || None);
     let reload = use_state(cx, || false);
@@ -83,10 +84,12 @@ pub fn ProfilePage(cx: Scope) -> Element {
     let on_submit_vehicle = move |vec: NewVehicle| {
         let token1 = token1.clone();
         let reload = reload.clone();
+        let open = open.clone();
 
         cx.spawn(async move {
             let _ = request::post("/vehicles", &vec, token1).await;
-            reload.set(true)
+            reload.set(true);
+            open.set(false);
         });
     };
 
@@ -143,7 +146,11 @@ pub fn ProfilePage(cx: Scope) -> Element {
                 _ => rsx!("")
             },
 
-            AddVehicle { onsubmit: on_submit_vehicle, oncancel: |_| {} }
+            if *open.current() {
+                rsx!(AddVehicle { onsubmit: on_submit_vehicle, oncancel: |_| open.set(false) })
+            } else {
+                rsx!(button {onclick: |_| open.set(true), "Ajouter un véhicule"})
+            }
         }
     ))
 }
