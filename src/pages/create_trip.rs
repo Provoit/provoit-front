@@ -12,6 +12,10 @@ pub fn CreateTripPage(cx: Scope) -> Element {
     let auth = use_shared_state::<Auth>(cx).unwrap();
     let token = use_token(cx);
 
+    if auth.read().user.clone().is_none() {
+        return None;
+    }
+
     let router = use_router(cx);
 
     let vehicles = use_future(
